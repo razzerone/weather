@@ -11,13 +11,18 @@ LANGUAGE = 'ru-ru'
 
 def get_weather_data(city_id: int, city_name: str, e=False) -> str:
     resp = requests.get(
-        f'http://dataservice.accuweather.com/currentconditions/v1/{city_id}',
+        f'https://dataservice.accuweather.com/currentconditions/v1/{city_id}',
         params={
             'apikey': API_KEY,
             'language': LANGUAGE,
             'details': e
+        },
+        headers={
+            'Accept': 'hypertext/json',
         }
     )
+
+    print(resp.headers)
 
     resp_json = json.loads(resp.content)[0]
 
@@ -54,13 +59,18 @@ def get_weather_data(city_id: int, city_name: str, e=False) -> str:
 
 def get_city_id(city: str) -> int:
     resp = requests.get(
-        'http://dataservice.accuweather.com/locations/v1/cities/search',
+        'https://dataservice.accuweather.com/locations/v1/cities/search',
         params={
             'apikey': API_KEY,
             'q': city,
             'language': LANGUAGE,
+        },
+        headers={
+            'Accept': 'hypertext/json',
         }
     )
+
+    print(resp.headers)
 
     return json.loads(resp.content)[0]['Key']
 
