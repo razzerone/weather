@@ -13,7 +13,8 @@ LANGUAGE = 'ru-ru'
 def get_weather_data(city_id: int, city_name: str, e=False) -> str:
     try:
         resp = requests.get(
-            f'https://dataservice.accuweather.com/currentconditions/v1/{city_id}',
+            f'https://dataservice.accuweather.com'
+            f'/currentconditions/v1/{city_id}',
             params={
                 'apikey': API_KEY,
                 'language': LANGUAGE,
