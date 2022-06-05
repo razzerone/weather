@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
 
 import requests as requests
@@ -10,19 +11,24 @@ LANGUAGE = 'ru-ru'
 
 
 def get_weather_data(city_id: int, city_name: str, e=False) -> str:
-    resp = requests.get(
-        f'https://dataservice.accuweather.com/currentconditions/v1/{city_id}',
-        params={
-            'apikey': API_KEY,
-            'language': LANGUAGE,
-            'details': e
-        },
-        headers={
-            'Accept': 'hypertext/json',
-        }
-    )
+    try:
+        resp = requests.get(
+            f'https://dataservice.accuweather.com/currentconditions/v1/{city_id}',
+            params={
+                'apikey': API_KEY,
+                'language': LANGUAGE,
+                'details': e
+            },
+            headers={
+                'Accept': 'hypertext/json',
+            }
+        )
+    except (requests.HTTPError, ConnectionError):
+        print('Невозможно получить информацию, проверьте подключение')
+        sys.exit(-1)
 
     print(resp.headers)
+    print(resp.content)
 
     resp_json = json.loads(resp.content)[0]
 
@@ -58,19 +64,24 @@ def get_weather_data(city_id: int, city_name: str, e=False) -> str:
 
 
 def get_city_id(city: str) -> int:
-    resp = requests.get(
-        'https://dataservice.accuweather.com/locations/v1/cities/search',
-        params={
-            'apikey': API_KEY,
-            'q': city,
-            'language': LANGUAGE,
-        },
-        headers={
-            'Accept': 'hypertext/json',
-        }
-    )
+    try:
+        resp = requests.get(
+            'https://dataservice.accuweather.com/locations/v1/cities/search',
+            params={
+                'apikey': API_KEY,
+                'q': city,
+                'language': LANGUAGE,
+            },
+            headers={
+                'Accept': 'hypertext/json',
+            }
+        )
+    except (requests.HTTPError, ConnectionError):
+        print('Невозможно получить информацию, проверьте подключение')
+        sys.exit(-1)
 
     print(resp.headers)
+    print(resp.content)
 
     return json.loads(resp.content)[0]['Key']
 
